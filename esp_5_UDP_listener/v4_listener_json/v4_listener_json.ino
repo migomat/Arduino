@@ -4,8 +4,11 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
-const char* ssid = "local";
+const char* ssid = "mietek";
 const char* password = "hujowapogoda";
+
+bool directions[32];
+
 
 WiFiUDP Udp;
 unsigned int localUdpPort = 4210;  // local port to listen on
@@ -70,7 +73,32 @@ void loop()
     Serial.println();
     Serial.print("teraz wartosc: ");
     Serial.println(root["m"].as<char*>());
+    Serial.println("pojedyncze pozycje z tablicy:");
+    Serial.println(root["m"].as<char*>()[1]);
+    Serial.println();
+    
     //JSON enda=
   }
 
 }
+
+void moventCalc(String text){
+  bool b_cross = text[0]
+  bool b_triangle = text[1]
+  bool b_circle = 
+  bool b_square
+  bool b_r1
+  bool b_r2
+  bool b_rThumb
+  bool b_l1
+  bool b_l2
+  bool b_lThumb
+  bool b_start
+  bool b_select
+  bool b_dPadUp
+  bool b_dPadDown
+  bool b_dPadLeft
+  bool b_dPadRight
+  
+  
+  }
