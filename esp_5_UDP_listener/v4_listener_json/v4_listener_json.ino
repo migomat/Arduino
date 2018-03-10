@@ -21,7 +21,7 @@ void setup()
   Serial.begin(115200);
   Serial.println();
 
-
+  pinMode(
   //JSON begin configure 
   StaticJsonBuffer<200> jsonBuffer; //setup JSON buffer size http://arduinojson.org/assistant
   JsonObject& root = jsonBuffer.createObject();
@@ -74,31 +74,54 @@ void loop()
     Serial.print("teraz wartosc: ");
     Serial.println(root["m"].as<char*>());
     Serial.println("pojedyncze pozycje z tablicy:");
-    Serial.println(root["m"].as<char*>()[1]);
+    //Serial.println(root["m"].as<char*>()[1]);
     Serial.println();
-    
+    moventCalc(root["m"].as<char*>());
     //JSON enda=
   }
 
 }
 
 void moventCalc(String text){
-  bool b_cross = text[0]
-  bool b_triangle = text[1]
-  bool b_circle = 
-  bool b_square
-  bool b_r1
-  bool b_r2
-  bool b_rThumb
-  bool b_l1
-  bool b_l2
-  bool b_lThumb
-  bool b_start
-  bool b_select
-  bool b_dPadUp
-  bool b_dPadDown
-  bool b_dPadLeft
-  bool b_dPadRight
-  
+  //bit positions number counted from [0] left=5, right=4, up=7, dPadDown=6, cross=3, square=2, circle=1, triangle=0
+  //Serial.println(text);
+  bool b_cross = charToBool(text[3]);
+  //Serial.print("cross");
+  //Serial.println(b_cross);
+  bool b_triangle = charToBool(text[0]);
+  //Serial.print("triangle");
+  //Serial.println(b_triangle);
+  bool b_circle = charToBool(text[1]);
+  //Serial.print("circle");
+  //Serial.println(b_circle);
+  bool b_square = charToBool(text[2]);
+  //Serial.print("square");
+  //Serial.println(b_square);
+  bool b_r1 = charToBool(text[8]);
+  bool b_r2 = charToBool(text[9]);
+  bool b_rThumb = charToBool(text[10]);
+  bool b_l1 = charToBool(text[11]);
+  bool b_l2 = charToBool(text[12]);
+  bool b_lThumb = charToBool(text[13]);
+  bool b_start = charToBool(text[14]);
+  bool b_select = charToBool(text[15]);
+  bool b_dPadUp = charToBool(text[7]);
+  bool b_dPadDown = charToBool(text[6]);
+  bool b_dPadLeft = charToBool(text[5]);
+  bool b_dPadRight = charToBool(text[4]);
+
   
   }
+
+bool charToBool(char text){
+  if(text=='0')
+    {
+      return 0;
+    }
+  else
+    {
+      return 1;  
+    }
+}
+
+
