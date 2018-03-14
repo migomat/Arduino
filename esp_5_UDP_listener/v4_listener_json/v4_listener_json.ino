@@ -4,7 +4,31 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
-const char* ssid = "mietek";
+//static const uint8_t D0   = 16;
+//static const uint8_t D1   = 5;
+//static const uint8_t D3   = 0;
+//static const uint8_t D4   = 2;
+//static const uint8_t D5   = 14;
+//static const uint8_t D6   = 12;
+//static const uint8_t D7   = 13;
+//static const uint8_t D8   = 15;
+//static const uint8_t D9   = 3;
+//static const uint8_t D10  = 1;
+
+static const uint8_t pFwd = D6;
+static const uint8_t pRwd = D5;
+static const uint8_t pRh  = D7;
+static const uint8_t pLh  = D8;
+#define b_crossByteNr 3
+#define b_squareByteNr 2
+//#define b_triangleByteNr 
+//#define b_circleByteNr 
+#define b_dpadLeftByteNr 5
+#define b_dpadRightByteNr 4
+#define b_dpadUpByteNr 7
+#define b_dpadDownByteNr 6
+
+const char* ssid = "local";
 const char* password = "hujowapogoda";
 
 bool directions[32];
@@ -21,7 +45,12 @@ void setup()
   Serial.begin(115200);
   Serial.println();
 
-  pinMode(
+  pinMode(pFwd, OUTPUT);//fwd
+  pinMode(pRwd, OUTPUT);//rwd
+  pinMode(pRh, OUTPUT);//rh
+  pinMode(pLh, OUTPUT);//lh
+
+  
   //JSON begin configure 
   StaticJsonBuffer<200> jsonBuffer; //setup JSON buffer size http://arduinojson.org/assistant
   JsonObject& root = jsonBuffer.createObject();
@@ -84,19 +113,20 @@ void loop()
 
 void moventCalc(String text){
   //bit positions number counted from [0] left=5, right=4, up=7, dPadDown=6, cross=3, square=2, circle=1, triangle=0
-  //Serial.println(text);
-  bool b_cross = charToBool(text[3]);
-  //Serial.print("cross");
-  //Serial.println(b_cross);
-  bool b_triangle = charToBool(text[0]);
+  Serial.print("move: ");
+  Serial.println(text);
+  bool b_cross = charToBool(text[b_crossByteNr]);
+  Serial.print("cross");
+  Serial.println(b_cross);
+ // bool b_triangle = charToBool(text[0]);
   //Serial.print("triangle");
   //Serial.println(b_triangle);
-  bool b_circle = charToBool(text[1]);
+ // bool b_circle = charToBool(text[b_circleByteNr]);
   //Serial.print("circle");
   //Serial.println(b_circle);
-  bool b_square = charToBool(text[2]);
-  //Serial.print("square");
-  //Serial.println(b_square);
+  bool b_square = charToBool(text[b_squareByteNr]);
+  Serial.print("square");
+  Serial.println(b_square);
   bool b_r1 = charToBool(text[8]);
   bool b_r2 = charToBool(text[9]);
   bool b_rThumb = charToBool(text[10]);
@@ -107,10 +137,39 @@ void moventCalc(String text){
   bool b_select = charToBool(text[15]);
   bool b_dPadUp = charToBool(text[7]);
   bool b_dPadDown = charToBool(text[6]);
-  bool b_dPadLeft = charToBool(text[5]);
-  bool b_dPadRight = charToBool(text[4]);
+  bool b_dPadLeft = charToBool(text[b_dpadLeftByteNr]);
+  Serial.print("left ");
+  Serial.println(b_dPadLeft);
+  bool b_dPadRight = charToBool(text[b_dpadRightByteNr]);
+    Serial.print("right ");
+  Serial.println(b_dPadRight);
+  //car motors protection 
+  if(b_dPadLeft == 1)
+  {
+    b_dPadRight=0;
+    }
+    if(b_dPadRight == 1)
+  {
+    b_dPadLeft=0;
+    }
 
+   if(b_cross == 1)
+  {
+    b_square=0;
+    }
+   if(b_square == 1)
+  {
+    b_cross=0;
+    } 
+
+  //end car motors protection
   
+  digitalWrite(pLh, b_dPadLeft);
+  digitalWrite(pRh, b_dPadRight);
+  digitalWrite(pFwd, b_cross);
+  digitalWrite(pRwd, b_square);
+
+ // analogWrite(pin,0);
   }
 
 bool charToBool(char text){
@@ -123,5 +182,6 @@ bool charToBool(char text){
       return 1;  
     }
 }
+
 
 
